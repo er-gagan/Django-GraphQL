@@ -1,11 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-class User(AbstractUser):
-    email = models.EmailField(blank=False, unique=True, max_length=255, verbose_name="email")
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
 # Create your models here.
 class Person(models.Model):

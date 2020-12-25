@@ -5,7 +5,7 @@ from .models import Person
 class PersonType(DjangoObjectType):
     class Meta:
         model = Person
-        fields = '__all__'
+        filter_fields = '__all__'
 
 class Query(graphene.ObjectType):
     allPerson = graphene.List(PersonType)
@@ -57,10 +57,21 @@ class deletePersonMutation(graphene.Mutation):
         person.delete()
         return        
 
+class searchPersonMutation(graphene.Mutation):
+    class Arguments:
+        Name = graphene.String(required=True)
+    person = graphene.Field(PersonType)
+    
+    @classmethod
+    def mutate(cls, root, info, Name):
+        person = Person.objects.get(Name__iexact=Name)
+        return searchPersonMutation(person=person)
+
 class Mutation(graphene.ObjectType):
     updatePerson = updatePersonMutation.Field()
     addPerson = addPersonMutation.Field()
     deletePerson = deletePersonMutation.Field()
+    searchPerson = searchPersonMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
